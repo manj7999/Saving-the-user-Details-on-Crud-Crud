@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="userForm">
+        <label>Name</label>
+        <input type="text" name="username" required>
+        <label>Email Id</label>
+        <input type="email" name="emailId" required>
+        <label>Phone Number</label>
+        <input type="tel" name="PhoneNumber">
+        <button type="submit">Submit</button>
+    </form>
+    <ul id="listOfitems"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.1/axios.min.js" integrity="sha512-m9S8W3a9hhBHPFAbEIaG7J9P92dzcAWwM42VvJp5n1/M599ldK6Z2st2SfJGsX0QR4LfCVr681vyU5vW8d218w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <script>
+       // Initialize the user data array
+       let users = [];
+
+       // Load user data from local storage on page load
+       const storedUsers = localStorage.getItem('users');
+       if (storedUsers) {
+           users = JSON.parse(storedUsers);
+           users.forEach(user => showUserOnScreen(user));
+       }
+
+       // Handle form submission
+       const userForm = document.getElementById('userForm');
+       userForm.addEventListener('submit', saveToLocalStorage);
+
+       function saveToLocalStorage(event) {
+           event.preventDefault();
+           const name = event.target.username.value;
+           const email = event.target.emailId.value;
+           const PhoneNumber = event.target.PhoneNumber.value;
+
+           const obj = {
+               name,
+               email,
+               PhoneNumber
+           };
+
+           axios.post("https://crudcrud.com/api/8842f52dca96427cb9ee90792acb70e2/appointmentData", obj)
+           .then((response) => {
+           showUserOnScreen(response.data)
+           console.log(respone)
+        })
+           .catch((err) => {
+            document.body.innerHTML = document.body.innerHTML + "<h4> Something Went Wrong </h4>"
+            console.log(err)
+           })
+
+           // Add the user data to the array
+           users.push(obj);
+
+           // Save the updated user data array to local storage
+           localStorage.setItem('users', JSON.stringify(users));
+
+           showUserOnScreen(obj);
+
+           // Clear the form
+           event.target.reset();
+       }
+
+       function showUserOnScreen(obj) {
+           const parentElem = document.getElementById('listOfitems');
+           const childElem = document.createElement('li');
+           childElem.textContent = obj.name + ' - ' + obj.email + ' - ' + obj.PhoneNumber;
+           parentElem.appendChild(childElem);
+       }
+    </script>
+</body>
+</html>
+<!-- 
+1. let users = []; - This line declares an empty array called users to store user data.
+
+
+2. const storedUsers = localStorage.getItem('users'); - It retrieves the user data array from local storage if it exists. If not, it sets storedUsers to null.
+ $$$[Suppose you visited the web page and submitted some user data, and the data was saved to local storage under the key 'users'. The next time you visit the same page or refresh it, the code will retrieve that previously stored data using localStorage.getItem('users') and populate it in the users array. This way, you can display the existing user data on the page, and you won't lose the data between sessions.]#
+
+
+3. if (storedUsers) { - This line checks if there is user data stored in local storage.
+
+4. users = JSON.parse(storedUsers); - If there's user data in local storage, it parses the stored JSON data and assigns it to the users array.
+
+5. users.forEach(user => showUserOnScreen(user)); - It iterates through each user in the users array and displays them on the web page using the showUserOnScreen function.
+
+6. const userForm = document.getElementById('userForm'); - This line selects the HTML form element with the ID 'userForm' and assigns it to the userForm variable.
+
+7. userForm.addEventListener('submit', saveToLocalStorage); - It adds an event listener to the form that listens for a form submission and calls the saveToLocalStorage function when the form is submitted.
+
+8. function saveToLocalStorage(event) { - This function is called when the form is submitted. It takes an event object as a parameter.
+
+9. event.preventDefault(); - It prevents the default form submission behavior, which would cause the page to refresh.
+
+10. It extracts the values of the name, email, and phone number inputs from the form.
+
+11. users.push(obj); - It adds the user object (obj) to the users array to store the new user's data.
+
+12. localStorage.setItem('users', JSON.stringify(users)); - It saves the updated users array to local storage as a JSON string with the key 'users'.
+
+13. showUserOnScreen(obj); - This function displays the new user's data on the web page.
+
+14. event.target.reset(); - It clears the form input fields after submission.
+
+15. function showUserOnScreen(obj) { - This function is responsible for displaying the user's data on the web page.
+
+16. const parentElem = document.getElementById('listOfitems'); - It selects the HTML element with the ID 'listOfitems' and assigns it to parentElem.
+
+17. It creates a new list item (li) element and populates it with the user's name, email, and phone number.
+
+18. parentElem.appendChild(childElem); - It adds the new list item to the list of items on the web page.
+
+ -->
